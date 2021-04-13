@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/pixi.min.js"></script>
+    <script>
+        let w;
+        let h;
+        let ship;
+        let rocks = [];
+        let keys = {};
+        let speed = 3;
+
+        let len = 20;
+        window.onload = function () {
+            app = new PIXI.Application(
+                {
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    backgroundColor: 0xBBCCBB
+
+                }
+            );
+            w = window.innerWidth;
+            h = window.innerHeight;
+            
+            let min = w / 6;
+            let max = w - w / 6;
+
+            document.querySelector("#gameDiv").appendChild(app.view);
+
+            app.stage.interactive = true;
+            ship = new PIXI.Sprite.from("img/cargo-ship.png");
+            ship.anchor.set(0.5);
+            ship.x = w / 2;
+            ship.y = h - h / 6;
+
+            app.stage.addChild(ship);
+
+            window.addEventListener("keydown", keysdown);
+            window.addEventListener("keyup", keysup);
+            
+
+            keysDiv = document.querySelector("#keys");
+            app.ticker.add(gameLoop);
+            
+            //alert(rand);
+
+            for(let i = 0;i < 20;i++){
+                let rand =  Math.floor(Math.random() * (max - min + 1) + min);
+                let rock = new PIXI.Sprite.from("img/rocks.png");
+                rock.x = rand;
+                rock.y = 100 + i * 100;
+                rock.width = 50;
+                rock.height = 50;
+                rocks[i] = rock;
+                app.stage.addChild(rocks[i]);
+                
+            }
+        }
+        function Sail(){
+            for(let i = 0;i < len;i++){
+                rocks[i].y += speed;
+            }
+        }
+        function gameLoop(){
+            Sail();
+            if(keys["68"]){
+                ship.x += 5;
+            }
+            if(keys["65"]){
+                ship.x -= 5;
+            }
+        }
+
+        function keysdown(e) {
+            keys[e.keyCode] = true;
+        }
+        function keysup(e) {
+            keys[e.keyCode] = false;
+        }
+        
+            
+
+    </script>
+</head>
+<body>
+    <div id="gameDiv">
+
+    </div>
+    
+</body>
+</html>
