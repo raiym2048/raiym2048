@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,26 +8,33 @@
     <title>Document</title>
     <script src="js/pixi.min.js"></script>
     <script>
+        let sort = true;
         let w;
         let h;
         let ship;
         let rocks = [];
+        let waves = [];
         let keys = {};
         let speed = 3;
+        let winds = [];
+        let wind;
+        let j = 0;
+        let wind2;
+        let wind3;
 
-        let len = 20;
+        let len = 100;
         window.onload = function () {
             app = new PIXI.Application(
                 {
                     width: window.innerWidth,
                     height: window.innerHeight,
-                    backgroundColor: 0xBBCCBB
+                    backgroundColor: 0xAACCFF
 
                 }
             );
             w = window.innerWidth;
             h = window.innerHeight;
-            
+
             let min = w / 6;
             let max = w - w / 6;
 
@@ -42,36 +50,99 @@
 
             window.addEventListener("keydown", keysdown);
             window.addEventListener("keyup", keysup);
-            
+
 
             keysDiv = document.querySelector("#keys");
-            app.ticker.add(gameLoop);
-            
+
+
             //alert(rand);
 
-            for(let i = 0;i < 20;i++){
-                let rand =  Math.floor(Math.random() * (max - min + 1) + min);
+            for (let i = 0; i < len; i++) {
+                let rand = Math.floor(Math.random() * (max - min + 1) + min);
+                let wave = new PIXI.Sprite.from("img/flood.png");
+                wave.y = 20 - i * 100;
+                wave.x = rand;
+                wave.width = 100;
+                wave.height = 30;
+
+                waves[i] = wave;
+                app.stage.addChild(waves[i]);
+
+
                 let rock = new PIXI.Sprite.from("img/rocks.png");
                 rock.x = rand;
-                rock.y = 100 + i * 100;
+                rock.y = 100 - i * 100;
                 rock.width = 50;
                 rock.height = 50;
                 rocks[i] = rock;
                 app.stage.addChild(rocks[i]);
-                
+
+                if (i % 10 == 0) {
+
+                    wind2 = new PIXI.Sprite.from("img/wind2.png");
+
+                    wind = new PIXI.Sprite.from("img/wind.png");
+                    if (sort) {
+                        if (wind3) {
+                            wind = wind3;
+                        }
+                        wind.x = 0;
+                        sort = false;
+                    }
+                    else {
+                        wind3 = wind;
+                        wind = wind2;
+
+                        wind.x = w - w / 4;
+                        sort = true;
+                    }
+
+                    wind.y = 20 - i * 100;
+                    wind.width = 200;
+                    wind.height = 50;
+                    wind.interactive = true;
+                    winds[j] = wind;
+
+                    app.stage.addChild(winds[j]);
+                    j++;
+
+                }
+
             }
+            app.ticker.add(gameLoop);
+
         }
-        function Sail(){
-            for(let i = 0;i < len;i++){
+        function Sail() {
+            for (let i = 0; i < winds.length; i++) {
+                winds[i].y += speed;
+                if (winds[i].y <= h / 2) {
+                    winds[i].x += 12;
+                    if (winds[i].x >= ship.x) {
+                        winds[i].interactive = false;
+                    }
+                }
+            }
+
+
+            for (let i = 0; i < len; i++) {
+
                 rocks[i].y += speed;
+                waves[i].y += speed;
+                waves[i].x += speed;
+                //wind.y += speed;
+
+                if (waves[i].x >= w) {
+                    waves[i].x = 0 - waves[i].width;
+                }
+
             }
         }
-        function gameLoop(){
+        function gameLoop() {
             Sail();
-            if(keys["68"]){
+            if (keys["68"]) {
                 ship.x += 5;
             }
-            if(keys["65"]){
+            if (keys["65"]) {
                 ship.x -= 5;
             }
         }
@@ -82,15 +153,18 @@
         function keysup(e) {
             keys[e.keyCode] = false;
         }
-        
-            
+
+
+
 
     </script>
 </head>
+
 <body>
     <div id="gameDiv">
 
     </div>
-    
+
 </body>
+
 </html>
