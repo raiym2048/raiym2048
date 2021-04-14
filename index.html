@@ -9,13 +9,15 @@
     <script src="js/pixi.min.js"></script>
     <script>
         let sort = true;
+        var count = 0;
         let w;
         let h;
         let ship;
         let rocks = [];
         let waves = [];
         let keys = {};
-        let speed = 3;
+        let speed = 2.5;
+        let windSpeed = 1;
         let winds = [];
         let wind;
         let j = 0;
@@ -85,6 +87,7 @@
                     if (sort) {
                         if (wind3) {
                             wind = wind3;
+                            //wind.left = true;
                         }
                         wind.x = 0;
                         sort = false;
@@ -92,8 +95,9 @@
                     else {
                         wind3 = wind;
                         wind = wind2;
+                        //wind.right = true;
 
-                        wind.x = w - w / 4;
+                        wind.x = w - w / 8;
                         sort = true;
                     }
 
@@ -115,12 +119,44 @@
         function Sail() {
             for (let i = 0; i < winds.length; i++) {
                 winds[i].y += speed;
-                if (winds[i].y <= h / 2) {
+                if (winds[i].y >= h / 2  && winds[i].x <  w - w / 8 && winds[i].x <= ship.x) {
                     winds[i].x += 12;
-                    if (winds[i].x >= ship.x) {
-                        winds[i].interactive = false;
+                    
+                    if(winds[i].x >= ship.x){
+                        if(count < 5){
+                            windSpeed = 1;
+                            ship.x += windSpeed;
+                            count ++;
+                        }
+                        
+                        
+                        if(count > 5){
+                            windSpeed = 0;
+                            count = 0;
+                            
+                        }
+                    }
+                    
+                    if (winds[i].x >= ship.x ) {
+                        //winds[i] = false;
+                    }
+                    
+                    
+                }
+                if (winds[i].y >= h / 2 && winds[i].x > w / 8 && winds[i].x >= ship.x) {
+                    winds[i].x -= 12;
+                    if(winds[i].x === ship.x){
+                        windSpeed = 1;
+                        ship.x -= windSpeed;
+                    }
+                    if(winds[i].x >= w / 8){
+                        windSpeed = 0;
+                    }
+                    if (winds[i].x <= ship.x) {
+                        //winds[i] = false;
                     }
                 }
+
             }
 
 
@@ -136,6 +172,9 @@
                 }
 
             }
+        }
+        function windBlow(){
+            
         }
         function gameLoop() {
             Sail();
