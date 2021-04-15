@@ -8,6 +8,13 @@
     <title>Document</title>
     <script src="js/pixi.min.js"></script>
     <script>
+        let c = 0;
+        let texts = [];
+        let x = 12;
+        let b = 0;
+        let word;
+        let words = [];
+        let check = true;
         let sort = true;
         var count = 0;
         let w;
@@ -17,12 +24,15 @@
         let waves = [];
         let keys = {};
         let speed = 2.5;
-        let windSpeed = 1;
+        var windSpeed = 2;
         let winds = [];
         let wind;
         let j = 0;
         let wind2;
         let wind3;
+        let gameOver = false;
+        let rect;
+        let rect1;
 
         let len = 100;
         window.onload = function () {
@@ -58,6 +68,14 @@
 
 
             //alert(rand);
+            rect = new PIXI.Graphics();
+            rect.beginFill(0xcccccc);
+            rect.lineStyle(2, 0xaaaa)
+            rect.drawRoundedRect(0, 0, w, 100);
+            rect.endFill();
+
+
+
 
             for (let i = 0; i < len; i++) {
                 let rand = Math.floor(Math.random() * (max - min + 1) + min);
@@ -90,6 +108,7 @@
                             //wind.left = true;
                         }
                         wind.x = 0;
+                        wind.left = true;
                         sort = false;
                     }
                     else {
@@ -98,65 +117,81 @@
                         //wind.right = true;
 
                         wind.x = w - w / 8;
+                        wind.left = false;
                         sort = true;
                     }
 
                     wind.y = 20 - i * 100;
                     wind.width = 200;
                     wind.height = 50;
+                    wind.visible = true;
                     wind.interactive = true;
                     winds[j] = wind;
 
                     app.stage.addChild(winds[j]);
                     j++;
-
                 }
+                if (i % 12 == 0) {
 
+                    rect1 = new PIXI.Graphics();
+                    rect1.beginFill(0xbb);
+                    rect1.lineStyle(2, 0xaaaa)
+                    let random = Math.floor(Math.random() * (max - min + 1) + min);
+                    if (rocks[i].x >= random && rocks[i].x + rocks[i].width <= random) {
+                        random += 50;
+                    }
+                    rect1.drawRoundedRect(random, 20 - i * 100, 40, 40);
+                    rect1.endFill();
+                    rect1.visible = true;
+
+                    words[b] = rect1;
+                    app.stage.addChild(words[b]);
+                    b++;
+                    let textOfCircle = new PIXI.Text(" " + i);
+                    console.log(textOfCircle.text);
+                    //textOfCircle.anchor.set(0.5);
+                    textOfCircle.x = random;
+                    textOfCircle.y = 20 - i * 100;
+                    textOfCircle.width = 30;
+                    textOfCircle.height = 30;
+                    textOfCircle.visible = true;
+                    texts[c] = textOfCircle;
+                    app.stage.addChild(texts[c]);
+                    c++;
+                }
             }
+            app.stage.addChild(rect);
             app.ticker.add(gameLoop);
 
         }
         function Sail() {
+            for (let i = 0; i < words.length; i++) {
+                words[i].y += speed;
+                texts[i].y += speed;
+            }
             for (let i = 0; i < winds.length; i++) {
                 winds[i].y += speed;
-                if (winds[i].y >= h / 2  && winds[i].x <  w - w / 8 && winds[i].x <= ship.x) {
+                if (winds[i].y >= h / 2 && winds[i].x < w - w / 8 && winds[i].left) {
                     winds[i].x += 12;
-                    
-                    if(winds[i].x >= ship.x){
-                        if(count < 5){
-                            windSpeed = 1;
-                            ship.x += windSpeed;
-                            count ++;
-                        }
-                        
-                        
-                        if(count > 5){
-                            windSpeed = 0;
-                            count = 0;
-                            
-                        }
-                    }
-                    
-                    if (winds[i].x >= ship.x ) {
-                        //winds[i] = false;
-                    }
-                    
-                    
-                }
-                if (winds[i].y >= h / 2 && winds[i].x > w / 8 && winds[i].x >= ship.x) {
-                    winds[i].x -= 12;
-                    if(winds[i].x === ship.x){
-                        windSpeed = 1;
-                        ship.x -= windSpeed;
-                    }
-                    if(winds[i].x >= w / 8){
-                        windSpeed = 0;
-                    }
-                    if (winds[i].x <= ship.x) {
-                        //winds[i] = false;
-                    }
-                }
 
+                    if (winds[i].x >= ship.x) {
+
+                        ship.x += windSpeed;
+                        if (winds[i].x >= w - w / 8) {
+                            winds[i].visible = false;
+                        }
+                    }
+                }
+                if (winds[i].y >= h / 2 && winds[i].x > w / 8 && winds[i].left != true) {
+                    winds[i].x -= 12;
+
+                    if (winds[i].x <= ship.x) {
+                        ship.x -= windSpeed;
+                        if (winds[i].x <= w / 8) {
+                            winds[i].visible = false;
+                        }
+                    }
+                }
             }
 
 
@@ -166,6 +201,14 @@
                 waves[i].y += speed;
                 waves[i].x += speed;
                 //wind.y += speed;
+                if (isHit(ship, rocks[i])) {
+                    if (check) {
+                        alert("game over");
+                        window.location.replace(window.location.pathname + window.location.search + window.location.hash);
+                    }
+                    check = false;
+
+                }
 
                 if (waves[i].x >= w) {
                     waves[i].x = 0 - waves[i].width;
@@ -173,8 +216,8 @@
 
             }
         }
-        function windBlow(){
-            
+        function windBlow() {
+
         }
         function gameLoop() {
             Sail();
@@ -184,6 +227,16 @@
             if (keys["65"]) {
                 ship.x -= 5;
             }
+        }
+
+        function isHit(obj1, obj2) {
+            if (obj1.x + obj1.width >= obj2.x
+                && obj1.x <= obj2.x + obj2.width
+                && obj1.y + obj1.height >= obj2.y
+                && obj1.y <= obj2.y + obj2.height) {
+                return true;
+            }
+
         }
 
         function keysdown(e) {
