@@ -8,6 +8,7 @@
     <title>Document</title>
     <script src="js/pixi.min.js"></script>
     <script>
+        let counter = 0;
         let c = 0;
         let texts = [];
         let x = 12;
@@ -67,12 +68,22 @@
             keysDiv = document.querySelector("#keys");
 
 
+
+
+
             //alert(rand);
             rect = new PIXI.Graphics();
             rect.beginFill(0xcccccc);
             rect.lineStyle(2, 0xaaaa)
             rect.drawRoundedRect(0, 0, w, 100);
             rect.endFill();
+
+            let count = new PIXI.Text("counter : " + counter);
+
+            count.x = w / 20;
+            count.y = h - h / 8;
+            count.visible = true;
+            app.stage.addChild(count);
 
 
 
@@ -148,7 +159,6 @@
                     app.stage.addChild(words[b]);
                     b++;
                     let textOfCircle = new PIXI.Text(" " + i);
-                    console.log(textOfCircle.text);
                     //textOfCircle.anchor.set(0.5);
                     textOfCircle.x = random;
                     textOfCircle.y = 20 - i * 100;
@@ -168,6 +178,10 @@
             for (let i = 0; i < words.length; i++) {
                 words[i].y += speed;
                 texts[i].y += speed;
+                if (isHit(ship, words[i])) {
+                    counter++;
+                    console.log(counter);
+                }
             }
             for (let i = 0; i < winds.length; i++) {
                 winds[i].y += speed;
