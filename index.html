@@ -11,20 +11,18 @@
         
         let c = 0;
         let texts = [];
-        let x = 12;
         let b = 0;
         let word;
         let words = [];
         let check = true;
         let sort = true;
-       ;
         let w;
         let h;
         let ship;
         let rocks = [];
         let waves = [];
         let keys = {};
-        let speed = 2.5;
+        let speed = 4;
         var windSpeed = 2;
         let winds = [];
         let wind;
@@ -36,11 +34,8 @@
         let rect1;
         var counter = 0;
         let count =  new PIXI.Text("counter : " + counter);
-;
 
-        
-
-        let len = 100;
+        let len = 200;
         window.onload = function () {
             app = new PIXI.Application(
                 {
@@ -52,8 +47,6 @@
             );
             w = window.innerWidth;
             h = window.innerHeight;
-            
-
             
 
             let min = w / 6;
@@ -75,21 +68,12 @@
 
             keysDiv = document.querySelector("#keys");
             
-
-            
-            
-
-
             //alert(rand);
             rect = new PIXI.Graphics();
             rect.beginFill(0xcccccc);
             rect.lineStyle(2, 0xaaaa)
             rect.drawRoundedRect(0, 0, w, 100);
             rect.endFill();
-
-            
-
-
 
 
             for (let i = 0; i < len; i++) {
@@ -102,7 +86,6 @@
 
                 waves[i] = wave;
                 app.stage.addChild(waves[i]);
-
 
                 let rock = new PIXI.Sprite.from("img/rocks.png");
                 rock.x = rand;
@@ -241,15 +224,7 @@
                         texts[i].point = false;
                     }
                     
-                    
-                    
-                    
-                    //app.stage.addChild(count);
-                    console.log(counter);
-                    count.text = "counter : " + counter;
-                    //app.stage.appendChild(count);
-
-                    
+                    count.text = "counter : " + counter;   
                 }
                 
             }
@@ -293,8 +268,6 @@
         function keysup(e) {
             keys[e.keyCode] = false;
         }
-
-
 
 
     </script>
