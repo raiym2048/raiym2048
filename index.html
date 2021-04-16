@@ -8,7 +8,7 @@
     <title>Document</title>
     <script src="js/pixi.min.js"></script>
     <script>
-        let counter = 0;
+        
         let c = 0;
         let texts = [];
         let x = 12;
@@ -17,7 +17,7 @@
         let words = [];
         let check = true;
         let sort = true;
-        var count = 0;
+       ;
         let w;
         let h;
         let ship;
@@ -34,6 +34,11 @@
         let gameOver = false;
         let rect;
         let rect1;
+        var counter = 0;
+        let count =  new PIXI.Text("counter : " + counter);
+;
+
+        
 
         let len = 100;
         window.onload = function () {
@@ -47,6 +52,9 @@
             );
             w = window.innerWidth;
             h = window.innerHeight;
+            
+
+            
 
             let min = w / 6;
             let max = w - w / 6;
@@ -66,9 +74,10 @@
 
 
             keysDiv = document.querySelector("#keys");
+            
 
-
-
+            
+            
 
 
             //alert(rand);
@@ -78,12 +87,7 @@
             rect.drawRoundedRect(0, 0, w, 100);
             rect.endFill();
 
-            let count = new PIXI.Text("counter : " + counter);
-
-            count.x = w / 20;
-            count.y = h - h / 8;
-            count.visible = true;
-            app.stage.addChild(count);
+            
 
 
 
@@ -165,6 +169,7 @@
                     textOfCircle.width = 30;
                     textOfCircle.height = 30;
                     textOfCircle.visible = true;
+                    textOfCircle.point = true;
                     texts[c] = textOfCircle;
                     app.stage.addChild(texts[c]);
                     c++;
@@ -175,14 +180,12 @@
 
         }
         function Sail() {
-            for (let i = 0; i < words.length; i++) {
-                words[i].y += speed;
-                texts[i].y += speed;
-                if (isHit(ship, words[i])) {
-                    counter++;
-                    console.log(counter);
-                }
-            }
+            count.text = "counter : " + counter;
+            count.x = w / 20;
+            count.y = h - h / 8;
+            app.stage.addChild(count);
+
+
             for (let i = 0; i < winds.length; i++) {
                 winds[i].y += speed;
                 if (winds[i].y >= h / 2 && winds[i].x < w - w / 8 && winds[i].left) {
@@ -229,11 +232,33 @@
                 }
 
             }
+            for (let i = 0; i < words.length; i++) {
+                words[i].y += speed;
+                texts[i].y += speed;
+                if (isHit(ship, texts[i])) {
+                    if(texts[i].point){
+                        counter++;
+                        texts[i].point = false;
+                    }
+                    
+                    
+                    
+                    
+                    //app.stage.addChild(count);
+                    console.log(counter);
+                    count.text = "counter : " + counter;
+                    //app.stage.appendChild(count);
+
+                    
+                }
+                
+            }
         }
         function windBlow() {
 
         }
         function gameLoop() {
+            
             Sail();
             if (keys["68"]) {
                 ship.x += 5;
@@ -244,6 +269,15 @@
         }
 
         function isHit(obj1, obj2) {
+            if (obj1.x + obj1.width / 2 >= obj2.x
+                && obj1.x <= obj2.x + obj2.width + obj2.width / 2
+                && obj1.y + obj1.height / 2>= obj2.y 
+                && obj1.y <= obj2.y + obj2.height + obj2.height ) {
+                return true;
+            }
+
+        }
+        function isPoint(obj1, obj2) {
             if (obj1.x + obj1.width >= obj2.x
                 && obj1.x <= obj2.x + obj2.width
                 && obj1.y + obj1.height >= obj2.y
