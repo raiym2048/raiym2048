@@ -45,8 +45,22 @@
         let quesText = new PIXI.Text(questions);
 
         quesText.x = 50;
-        quesText.y = 30;
+        quesText.y = 20;
         quesText.text = "x >= " + A + " - " + B;
+        let copy = new PIXI.Text("x = ");
+        copy.x = 50;
+        copy.y = 60;
+        let copy2 = new PIXI.Graphics();
+        copy2.beginFill(0xaaaacc);
+        copy2.lineStyle(2, 0xaa)
+        copy2.drawRoundedRect(100, 55, 40, 40);
+        copy2.endFill();
+        copy2.visible = true;
+
+
+        let copy3 = new PIXI.Text(0);
+        copy3.x = 110;
+        copy3.y = 58;
 
 
         let len = 200;
@@ -187,6 +201,11 @@
             }
             app.stage.addChild(rect);
             app.stage.addChild(quesText);
+            app.stage.addChild(copy);
+            app.stage.addChild(copy2);
+            app.stage.addChild(copy3);
+
+
 
             app.ticker.add(gameLoop);
 
@@ -231,6 +250,7 @@
                 waves[i].x += speed;
                 //wind.y += speed;
                 if (isHit(ship, rocks[i])) {
+
                     if (check) {
                         alert("you hit a rock!!!");
                         window.location.replace(window.location.pathname + window.location.search + window.location.hash);
@@ -247,11 +267,17 @@
             for (let i = 0; i < words.length; i++) {
                 words[i].y += speed;
                 texts[i].y += speed;
+
                 if (texts[i].y >= 0) {
                     isHuman(texts[i]);
+                    copy3.text = texts[i].text;
+                    //copy3.x = 100 + texts[i].width / 2;
+
 
                 }
                 if (isHit(ship, texts[i])) {
+                    texts[i].visible = false;
+                    words[i].visible = false;
                     if (texts[i].point) {
                         if (!texts[i].isPosible) {
                             if (check) {
@@ -309,6 +335,10 @@
                 let O = Math.floor(Math.random() * (50 - 1 + 1) + 1);
                 //let I = Math.floor(Math.random() * (50 - 1 + 1) + 1);
                 quesText.text = "x >= " + P + " - " + O;
+
+
+
+
                 let answerOne = P - O;
 
                 if (number.text <= answerOne) {
