@@ -8,7 +8,8 @@
     <title>Document</title>
     <script src="js/pixi.min.js"></script>
     <script>
-        
+        let x = [];
+        let anss = [];
         let c = 0;
         let texts = [];
         let b = 0;
@@ -22,18 +23,31 @@
         let rocks = [];
         let waves = [];
         let keys = {};
-        let speed = 4;
+        let speed = 2.5;
         var windSpeed = 2;
         let winds = [];
         let wind;
         let j = 0;
         let wind2;
         let wind3;
+        var questions = "x >= ";
         let gameOver = false;
         let rect;
+        w = window.innerWidth;
+        h = window.innerHeight;
         let rect1;
         var counter = 0;
-        let count =  new PIXI.Text("counter : " + counter);
+        let count = new PIXI.Text("counter : " + counter);
+        let A = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+        let B = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+        let C = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+        questions = "x >= " + A + " - " + B + " + " + C;
+        let quesText = new PIXI.Text(questions);
+
+        quesText.x = 50;
+        quesText.y = 30;
+        quesText.text = "x >= " + A + " - " + B + " + " + C;
+
 
         let len = 200;
         window.onload = function () {
@@ -45,9 +59,9 @@
 
                 }
             );
-            w = window.innerWidth;
-            h = window.innerHeight;
-            
+
+
+
 
             let min = w / 6;
             let max = w - w / 6;
@@ -67,13 +81,14 @@
 
 
             keysDiv = document.querySelector("#keys");
-            
+
             //alert(rand);
             rect = new PIXI.Graphics();
             rect.beginFill(0xcccccc);
             rect.lineStyle(2, 0xaaaa)
             rect.drawRoundedRect(0, 0, w, 100);
             rect.endFill();
+
 
 
             for (let i = 0; i < len; i++) {
@@ -145,7 +160,10 @@
                     words[b] = rect1;
                     app.stage.addChild(words[b]);
                     b++;
-                    let textOfCircle = new PIXI.Text(" " + i);
+                    let first = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+                    x[c] = first;
+
+                    let textOfCircle = new PIXI.Text(x[c]);
                     //textOfCircle.anchor.set(0.5);
                     textOfCircle.x = random;
                     textOfCircle.y = 20 - i * 100;
@@ -153,12 +171,23 @@
                     textOfCircle.height = 30;
                     textOfCircle.visible = true;
                     textOfCircle.point = true;
+                    textOfCircle.human = true;
+                    textOfCircle.isPosible = true;
+                    textOfCircle.isWasnt = true;
                     texts[c] = textOfCircle;
                     app.stage.addChild(texts[c]);
                     c++;
+
+
+                    // questions
+
+                    let A;
+                    //let answer = x + B - C;
                 }
             }
             app.stage.addChild(rect);
+            app.stage.addChild(quesText);
+
             app.ticker.add(gameLoop);
 
         }
@@ -203,7 +232,7 @@
                 //wind.y += speed;
                 if (isHit(ship, rocks[i])) {
                     if (check) {
-                        alert("game over");
+                        alert("you hit a rock!!!");
                         window.location.replace(window.location.pathname + window.location.search + window.location.hash);
                     }
                     check = false;
@@ -218,22 +247,35 @@
             for (let i = 0; i < words.length; i++) {
                 words[i].y += speed;
                 texts[i].y += speed;
+                if (texts[i].y >= 0) {
+                    isHuman(texts[i]);
+
+                }
                 if (isHit(ship, texts[i])) {
-                    if(texts[i].point){
+                    if (texts[i].point) {
+                        if (!texts[i].isPosible) {
+                            if (check) {
+                                alert("your choice is wrong!!!");
+                                window.location.replace(window.location.pathname + window.location.search + window.location.hash);
+                            }
+                            check = false;
+                        }
                         counter++;
                         texts[i].point = false;
                     }
-                    
-                    count.text = "counter : " + counter;   
+
+                    count.text = "counter : " + counter;
                 }
-                
+
+
             }
+
         }
         function windBlow() {
 
         }
         function gameLoop() {
-            
+
             Sail();
             if (keys["68"]) {
                 ship.x += 5;
@@ -246,8 +288,8 @@
         function isHit(obj1, obj2) {
             if (obj1.x + obj1.width / 2 >= obj2.x
                 && obj1.x <= obj2.x + obj2.width + obj2.width / 2
-                && obj1.y + obj1.height / 2>= obj2.y 
-                && obj1.y <= obj2.y + obj2.height + obj2.height ) {
+                && obj1.y + obj1.height / 2 >= obj2.y
+                && obj1.y <= obj2.y + obj2.height + obj2.height) {
                 return true;
             }
 
@@ -259,6 +301,22 @@
                 && obj1.y <= obj2.y + obj2.height) {
                 return true;
             }
+
+        }
+        function isHuman(number) {
+            if (number.isWasnt) {
+                let P = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+                let O = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+                let I = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+                quesText.text = "x >= " + P + " - " + O + " + " + I;
+                let answerOne = P - O + I;
+
+                if (number.text <= answerOne) {
+                    number.isPosible = false;
+                }
+                number.isWasnt = false;
+            }
+            //return quesText;
 
         }
 
