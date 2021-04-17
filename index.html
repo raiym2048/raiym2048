@@ -40,13 +40,13 @@
         let count = new PIXI.Text("counter : " + counter);
         let A = Math.floor(Math.random() * (50 - 1 + 1) + 1);
         let B = Math.floor(Math.random() * (50 - 1 + 1) + 1);
-        let C = Math.floor(Math.random() * (50 - 1 + 1) + 1);
-        questions = "x >= " + A + " - " + B + " + " + C;
+        //let C = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+        questions = "x >= " + A + " - " + B;
         let quesText = new PIXI.Text(questions);
 
         quesText.x = 50;
         quesText.y = 30;
-        quesText.text = "x >= " + A + " - " + B + " + " + C;
+        quesText.text = "x >= " + A + " - " + B;
 
 
         let len = 200;
@@ -147,8 +147,8 @@
                 if (i % 12 == 0) {
 
                     rect1 = new PIXI.Graphics();
-                    rect1.beginFill(0xbb);
-                    rect1.lineStyle(2, 0xaaaa)
+                    rect1.beginFill(0xaaaacc);
+                    rect1.lineStyle(2, 0xaa)
                     let random = Math.floor(Math.random() * (max - min + 1) + min);
                     if (rocks[i].x >= random && rocks[i].x + rocks[i].width <= random) {
                         random += 50;
@@ -160,7 +160,7 @@
                     words[b] = rect1;
                     app.stage.addChild(words[b]);
                     b++;
-                    let first = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+                    let first = Math.floor(Math.random() * (30 - 1 + 1) + 1);
                     x[c] = first;
 
                     let textOfCircle = new PIXI.Text(x[c]);
@@ -307,9 +307,9 @@
             if (number.isWasnt) {
                 let P = Math.floor(Math.random() * (50 - 1 + 1) + 1);
                 let O = Math.floor(Math.random() * (50 - 1 + 1) + 1);
-                let I = Math.floor(Math.random() * (50 - 1 + 1) + 1);
-                quesText.text = "x >= " + P + " - " + O + " + " + I;
-                let answerOne = P - O + I;
+                //let I = Math.floor(Math.random() * (50 - 1 + 1) + 1);
+                quesText.text = "x >= " + P + " - " + O;
+                let answerOne = P - O;
 
                 if (number.text <= answerOne) {
                     number.isPosible = false;
